@@ -1,0 +1,6 @@
+﻿  main.cpp
+c:\users\rail\documents\visual studio 2015\projects\algorithmofglobalsearch\algorithmofglobalsearch\main.cpp(112): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\rail\documents\visual studio 2015\projects\algorithmofglobalsearch\algorithmofglobalsearch\main.cpp(29): warning C4101: ValueOfGlobalMin: неиспользованная локальная переменная
+c:\users\rail\documents\visual studio 2015\projects\algorithmofglobalsearch\algorithmofglobalsearch\main.cpp(30): warning C4101: IndexOfGlobalMin: неиспользованная локальная переменная
+  AlgorithmOfGlobalSearch.vcxproj -> C:\Users\Rail\Documents\Visual Studio 2015\Projects\AlgorithmOfGlobalSearch\Debug\AlgorithmOfGlobalSearch.exe
+  AlgorithmOfGlobalSearch.vcxproj -> C:\Users\Rail\Documents\Visual Studio 2015\Projects\AlgorithmOfGlobalSearch\Debug\AlgorithmOfGlobalSearch.pdb (Full PDB)
