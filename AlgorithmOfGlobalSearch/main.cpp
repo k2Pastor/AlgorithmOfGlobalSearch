@@ -13,13 +13,6 @@ struct TestPoint
 	double x;
 	double z;
 	TestPoint(double _x = 0, double _z = 0) : x(_x), z(_z) { }
-	bool operator () (const TestPoint & tp1, const TestPoint & tp2)
-	{
-		if (tp1.x == tp2.x)
-			return tp1.x < tp2.x;
-
-		return tp1.x < tp2.x;
-	}
 };
 
 struct Interval
@@ -33,17 +26,14 @@ struct Interval
 
 bool operator<(const Interval& i1, const Interval& i2) { return (i1.R1 < i2.R1) ? true : false; }
 
-double f(const TestPoint& tp)
+double f(double x)
 {
-	return pow((tp.x), 2);
+	//return 2 * pow((tp.x - 3), 2) + pow(exp(tp.x), pow(tp.x, 2));
+	return sin(x) + sin((10 * x) / 3);
+	//return tp.x * tp.x;
 }
 
-double ComputeM(const TestPoint& tpLeft, const TestPoint& tpRight)
-{
-	double diffX = tpRight.x - tpLeft.x;
-	double diffZ = tpRight.z - tpLeft.z;
-	return fabs(diffZ / diffX);
-}
+
 
 double ComputeR(const TestPoint& tpLeft, const TestPoint& tpRight, double _m)
 {
@@ -52,18 +42,28 @@ double ComputeR(const TestPoint& tpLeft, const TestPoint& tpRight, double _m)
 	return _m * diffX + diffZ * diffZ / (_m * diffX) - 2 * (tpRight.z + tpLeft.z);
 } 
 
-double ComputeKPoint(const TestPoint& tpLeft, const TestPoint& tpRight, double _m)
+TestPoint* InsertUp_List(list<TestPoint> &ltp, TestPoint &tpk)
 {
-	double sumX = tpRight.x + tpLeft.x;
-	double diffX = tpRight.z - tpLeft.z;
-	return 0.5 * sumX - (diffX / (2 * _m));
+	list<TestPoint>::iterator itLeft, itRight;
+	itLeft = itRight = ltp.begin();
+
+	while ((itRight != ltp.end()) && (itRight->x < tpk.x))
+	{
+		itLeft = itRight;
+		itRight++;
+	}
+
+	ltp.insert(itRight, tpk);
+	itLeft++;
+	
+	return &(*itLeft);
 }
 
 
 int main()
 {
 	list<TestPoint> testPoints; // точки испытаний;
-	list<TestPoint>::iterator itLeft, itRight, itLeftMax, itRightMax;
+	list<TestPoint>::iterator itLeft, itRight;
 	vector<double> VectorOfm;
 	VectorOfm.reserve(100);
 	priority_queue<Interval> Queue;
@@ -73,11 +73,10 @@ int main()
 	double accuracy; // точность алгоритма;
 	int iterations; // количество итераций;
 	int k = 0; // количество испытаний;
-	int j = 0;
 	double M;
-	double m; // константа Липшица;
+	double m = -1.0; // константа Липшица;
 	double r = 2.0; // заданный параметр метода;
-	double GlobalMin = 1000.0, DotOfGlobalMin;
+	double GlobalMin, DotOfGlobalMin;
 	
 
 	cout << "Enter the ends of the segment [a;b] : " << endl;
@@ -103,34 +102,45 @@ int main()
 		itLeft = itRight = testPoints.begin();
 		++itRight;
 
-		for (int i = 0; i < k; i++)
-		{
-			double FakeM = ComputeM(*itLeft, *itRight);
+		double Old_m = m;
 
-			if (M < FakeM)
+		while (itRight != testPoints.end())
+		{
+			double max_M = fabs((itRight->z - itLeft->z) / (itRight->x - itLeft->x));
+			if (M < max_M)
 			{
-				M = FakeM;
+				M = max_M;
 			}
+
+			itRight++;
+			itLeft++;
 		}
 
-		if (M > 0)
+		if (M > 0.0)
 		{
 			m = r * M;
-			VectorOfm.push_back(m);
 		}
-		else
-		{
+		else {
 			m = 1.0;
-			VectorOfm.push_back(m);
 		}
+	
 
-		tpk.x = ComputeKPoint(*itLeft, *itRight, m);
-		tpk.z = f(tpk.x);
-		
-		if ((VectorOfm.size() >= 2) && (VectorOfm[j + 1] != VectorOfm[j]))
+	
+
+		if (Old_m != m)
 		{
 			Queue = priority_queue<Interval>();
-			j++;
+
+			itLeft = itRight = testPoints.begin();
+			itRight++;
+
+			while (itRight != testPoints.end())
+			{
+				Queue.push(Interval(ComputeR(*itLeft, *itRight, m), &(*itLeft), &(*itRight)));
+				++itLeft;
+				++itRight;
+			}
+			
 		}
 
 		while ( itRight != testPoints.end() )
@@ -144,31 +154,39 @@ int main()
 		{	
 			(itRight--);
 		}
-
-		testPoints.insert(itRight, tpk);
-		testPoints.sort(TestPoint());
+		
 		CharacteristicInterval = Queue.top();
+		Queue.pop();
+
+		double sumX = CharacteristicInterval.pRight->x + CharacteristicInterval.pLeft->x;
+		double diffZ = CharacteristicInterval.pRight->z - CharacteristicInterval.pLeft->z;
+		tpk.x = 0.5 * sumX - (diffZ / (2 * m));
+		tpk.z = f(tpk.x);
+
+		TestPoint* tpt = InsertUp_List(testPoints, tpk);
+
+		Queue.push(Interval(ComputeR(*CharacteristicInterval.pLeft, *tpt, m), CharacteristicInterval.pLeft, tpt));
+		Queue.push(Interval(ComputeR(*tpt, *CharacteristicInterval.pRight, m), tpt, CharacteristicInterval.pRight));
 		
 		k++;
 		
-		
 
-	} while ((CharacteristicInterval.pRight - CharacteristicInterval.pLeft > accuracy) && (k - 2 ) < iterations); 
+ 	} while (fabs((CharacteristicInterval.pRight -> x - CharacteristicInterval.pLeft -> x) > accuracy) && (( k - 2 ) < iterations)); 
 	
-	
-	
-	while (!testPoints.empty())
+	itLeft = testPoints.begin();
+	GlobalMin = itLeft->z;
+	DotOfGlobalMin = itLeft->x;
+	itLeft++;
+
+	while (itLeft != testPoints.end())
 	{
-		
-		DotOfGM = testPoints.back();
-
-		if (DotOfGM.z < GlobalMin)
+		if (GlobalMin > itLeft->z)
 		{
-			GlobalMin = DotOfGM.z;
-			DotOfGlobalMin = DotOfGM.x;
+			GlobalMin = itLeft->z;
+			DotOfGlobalMin = itLeft->x;
 		}
 
-		testPoints.pop_back();
+		itLeft++;
 	}
 
 	cout << " Global minimum is: " << GlobalMin << endl;
@@ -176,3 +194,4 @@ int main()
 	cout << " Number of experiments is: " << k << endl;
 
 } 
+
