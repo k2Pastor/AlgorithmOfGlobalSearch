@@ -1,10 +1,12 @@
 
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <queue>
 #include <list>
 #include <iterator>
+#include <cmath>
 
 using namespace std;
 
@@ -26,14 +28,29 @@ struct Interval
 
 bool operator<(const Interval& i1, const Interval& i2) { return (i1.R1 < i2.R1) ? true : false; }
 
+/*double f(double x)
+{
+	//return 2 * (x - 3.0) * (x - 3.0) + exp(x * x / 2.0); // совпадение;
+	//return sin(x) + sin((10 * x) / 3); // совпадение;
+	//return tp.x * tp.x;
+	//return ((3.0 * x - 1.4) * sin(18.0 * x)); // совпадение;
+	//return -1.0 * (x + sin(x)) * exp(-1.0 * x * x); // совпадение;
+	//return sin(x) + sin((10 * x) / 3) + log(x) - 0.84 * x + 3; // совпадение;
+	//return -1.0 * sin(2 * M_PI * x) * exp(-1.0 * x); // почти совпадение;
+	//return (x * x - 5 * x + 6) / (x * x + 1); // совпадение;
+	//return -x + sin(3 * x) - 1; // совпадение;
+} */
+
 double f(double x)
 {
-	//return 2 * pow((tp.x - 3), 2) + pow(exp(tp.x), pow(tp.x, 2));
-	return sin(x) + sin((10 * x) / 3);
-	//return tp.x * tp.x;
+	double sum = 0.0;
+	for (int k = 1; k <= 5; k++)
+	{
+		sum += k * sin((k + 1) * x + k);
+	}
+
+	return -1.0 * sum;
 }
-
-
 
 double ComputeR(const TestPoint& tpLeft, const TestPoint& tpRight, double _m)
 {
