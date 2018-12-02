@@ -1,12 +1,11 @@
 
 #define _USE_MATH_DEFINES
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <queue>
 #include <list>
 #include <iterator>
 #include <cmath>
+#include <ctime>
 
 using namespace std;
 
@@ -28,20 +27,20 @@ struct Interval
 
 bool operator<(const Interval& i1, const Interval& i2) { return (i1.R1 < i2.R1) ? true : false; }
 
-/*double f(double x)
+double f(double x)
 {
 	//return 2 * (x - 3.0) * (x - 3.0) + exp(x * x / 2.0); // совпадение;
 	//return sin(x) + sin((10 * x) / 3); // совпадение;
-	//return tp.x * tp.x;
+	//return x * x;
 	//return ((3.0 * x - 1.4) * sin(18.0 * x)); // совпадение;
 	//return -1.0 * (x + sin(x)) * exp(-1.0 * x * x); // совпадение;
 	//return sin(x) + sin((10 * x) / 3) + log(x) - 0.84 * x + 3; // совпадение;
 	//return -1.0 * sin(2 * M_PI * x) * exp(-1.0 * x); // почти совпадение;
 	//return (x * x - 5 * x + 6) / (x * x + 1); // совпадение;
 	//return -x + sin(3 * x) - 1; // совпадение;
-} */
+} 
 
-double f(double x)
+/*double f(double x)
 {
 	double sum = 0.0;
 	for (int k = 1; k <= 5; k++)
@@ -50,7 +49,7 @@ double f(double x)
 	}
 
 	return -1.0 * sum;
-}
+} */
 
 double ComputeR(const TestPoint& tpLeft, const TestPoint& tpRight, double _m)
 {
@@ -81,8 +80,6 @@ int main()
 {
 	list<TestPoint> testPoints; // точки испытаний;
 	list<TestPoint>::iterator itLeft, itRight;
-	vector<double> VectorOfm;
-	VectorOfm.reserve(100);
 	priority_queue<Interval> Queue;
 
 	TestPoint tp1, tp2, tpk, DotOfGM;
@@ -94,6 +91,7 @@ int main()
 	double m = -1.0; // константа Липшица;
 	double r = 2.0; // заданный параметр метода;
 	double GlobalMin, DotOfGlobalMin;
+	double timeStart, timeEnd;
 	
 
 	cout << "Enter the ends of the segment [a;b] : " << endl;
@@ -102,6 +100,8 @@ int main()
 	cin >> iterations;
 	cout << "Enter value of the accuracy: " << endl;
 	cin >> accuracy;
+
+	timeStart = clock();
 
 	tp1.z = f(tp1.x);
 	tp2.z = f(tp2.x);
@@ -165,7 +165,7 @@ int main()
 			Queue.push(Interval(ComputeR(*itLeft, *itRight, m), &(*itLeft), &(*itRight)));
 			++itLeft;
 			++itRight;
-		}
+		} 
 			
 		if (itRight == testPoints.end())
 		{	
@@ -206,9 +206,12 @@ int main()
 		itLeft++;
 	}
 
-	cout << " Global minimum is: " << GlobalMin << endl;
+	timeEnd = clock();
+	cout.precision(9);
+	cout << " Global minimum is: " << std::fixed << GlobalMin << endl;
 	cout << " Dot of global minimum is: " << DotOfGlobalMin << endl;
 	cout << " Number of experiments is: " << k << endl;
+	cout << "Time of algorithm is: " << (timeEnd - timeStart) / CLOCKS_PER_SEC << endl;
 
 } 
 
