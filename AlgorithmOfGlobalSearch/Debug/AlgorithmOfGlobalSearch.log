@@ -1,3 +1,2 @@
 ﻿  main.cpp
-  AlgorithmOfGlobalSearch.vcxproj -> C:\Users\Rail\Documents\Visual Studio 2015\Projects\AlgorithmOfGlobalSearch\Debug\AlgorithmOfGlobalSearch.exe
-  AlgorithmOfGlobalSearch.vcxproj -> C:\Users\Rail\Documents\Visual Studio 2015\Projects\AlgorithmOfGlobalSearch\Debug\AlgorithmOfGlobalSearch.pdb (Full PDB)
+c:\users\user1\documents\github\algorithmofglobalsearch\algorithmofglobalsearch\main.cpp(41): error C4716: f: должна возвращать значение

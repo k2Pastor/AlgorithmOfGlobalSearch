@@ -27,29 +27,91 @@ struct Interval
 
 bool operator<(const Interval& i1, const Interval& i2) { return (i1.R1 < i2.R1) ? true : false; }
 
-double f(double x)
-{
-	//return 2 * (x - 3.0) * (x - 3.0) + exp(x * x / 2.0); // совпадение;
-	//return sin(x) + sin((10 * x) / 3); // совпадение;
-	//return x * x;
-	//return ((3.0 * x - 1.4) * sin(18.0 * x)); // совпадение;
-	//return -1.0 * (x + sin(x)) * exp(-1.0 * x * x); // совпадение;
-	//return sin(x) + sin((10 * x) / 3) + log(x) - 0.84 * x + 3; // совпадение;
-	//return -1.0 * sin(2 * M_PI * x) * exp(-1.0 * x); // почти совпадение;
-	//return (x * x - 5 * x + 6) / (x * x + 1); // совпадение;
-	//return -x + sin(3 * x) - 1; // совпадение;
-} 
-
-/*double f(double x)
+/* double f(double x)
 {
 	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return sin(x) + sin(10.0 * x / 3.0) + sum;
+} */
+
+/* double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	double s = 0.0;
 	for (int k = 1; k <= 5; k++)
 	{
-		sum += k * sin((k + 1) * x + k);
+		s += k * sin((k + 1) * x + k);
 	}
-
-	return -1.0 * sum;
+	return -1.0 * s + sum;
 } */
+
+ /*double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return (3.0 * x - 1.4) * sin(18.0 * x) + sum;
+} */
+
+/* double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return -1.0 * (x + sin(x)) * exp(-1.0 * x * x) + sum;
+} */
+
+/* double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return sin(x) + sin(10.0 * x / 3.0) + log(x) - 0.84 * x + 3.0 + sum;
+} */
+
+/* double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return -1.0 * sin(2.0 * M_PI * x) * exp(-1.0 * x) + sum;
+} */
+
+/* double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return (x * x - 5.0 * x + 6.0) / (x * x + 1.0) + sum;
+} */
+
+/* double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return -1.0 * x + sin(3.0 * x) - 1.0 + sum;
+} */
+
+ double f(double x)
+{
+	double sum = 0.0;
+	for (int i = 1; i <= 100000; i++)
+		sum += sin(sin(sin(i)))*sin(sin(sin(i))) + cos(sin(sin(i)))*cos(sin(sin(i)));
+	sum -= 100000;
+	return 2.0 * (x - 3.0) * (x - 3.0) + exp(x * x / 2.0) + sum;
+} 
 
 double ComputeR(const TestPoint& tpLeft, const TestPoint& tpRight, double _m)
 {
@@ -82,7 +144,7 @@ int main()
 	list<TestPoint>::iterator itLeft, itRight;
 	priority_queue<Interval> Queue;
 
-	TestPoint tp1, tp2, tpk, DotOfGM;
+	TestPoint tp1, tp2, tpk;
 	Interval CharacteristicInterval;
 	double accuracy; // точность алгоритма;
 	int iterations; // количество итераций;
